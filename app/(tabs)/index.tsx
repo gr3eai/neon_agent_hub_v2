@@ -5,12 +5,18 @@ import { chatStore, type Provider } from "@/lib/stores/chat-store";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { AdMobBanner } from "@/components/admob-banner";
+import { initializeAdMob } from "@/lib/services/admob-service";
 
 export default function HomeScreen() {
   const { chats } = useChatStore();
   const colors = useColors();
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    initializeAdMob();
+  }, []);
 
   const filteredChats = chats.filter((chat) =>
     chat.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -139,6 +145,7 @@ export default function HomeScreen() {
             <Text className="text-lg text-muted text-center">
               {searchQuery ? "لا توجد نتائج" : "لا توجد محادثات\nابدأ محادثة جديدة"}
             </Text>
+            <AdMobBanner useTestAds={true} />
           </View>
         ) : (
           <FlatList
@@ -173,6 +180,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             )}
             showsVerticalScrollIndicator={false}
+            ListFooterComponent={<AdMobBanner useTestAds={true} />}
           />
         )}
       </View>
